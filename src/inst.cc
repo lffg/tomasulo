@@ -1,8 +1,8 @@
 #include <cctype>
+#include <charconv>
 #include <cstdint>
 #include <stdexcept>
 #include <string_view>
-#include <charconv>
 #include <utility>
 
 #include "inst.hh"
@@ -210,5 +210,10 @@ namespace inst
             break;
         }
         return os;
+    }
+
+    void prog_t::add(inst_t i)
+    {
+        prog.push_back(i);
     }
 }

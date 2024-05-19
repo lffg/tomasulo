@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <ostream>
 #include <string_view>
+#include <vector>
 
 namespace inst
 {
@@ -35,4 +36,13 @@ namespace inst
     int latency_for_op(op_t);
     inst_t parse(std::string_view src);
     std::ostream &operator<<(std::ostream &os, const inst_t &inst);
+
+    class prog_t
+    {
+    public:
+        std::vector<inst_t> prog;
+
+        prog_t() : prog{} {}
+        void add(inst_t i);
+    };
 }
