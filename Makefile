@@ -1,8 +1,8 @@
-CC ?= clang
-CFLAGS ?= -Wall -Wextra
-
 TARGET ?= target
 CFG ?= debug
+
+CC := clang++
+CFLAGS := -Wall -Wextra
 
 ifeq ($(CFG),release)
 CFLAGS += -O3
@@ -13,20 +13,20 @@ $(shell mkdir -p $(OUT))
 
 MAIN := $(TARGET)/main
 
-SOURCE_MAIN := src/main.c
+SOURCE_MAIN := src/main.cc
 # Main mustn't have a corresponding header.
-SOURCES := $(patsubst %.h,%.c,$(wildcard src/*.h))
+SOURCES := $(patsubst %.hh,%.cc,$(wildcard src/*.hh))
 
-OBJS := $(patsubst src/%.c,$(OUT)/%.o,$(SOURCES))
+OBJECTS := $(patsubst src/%.cc,$(OUT)/%.o,$(SOURCES))
 
 .PHONY: run
 run: $(MAIN)
 	$(RUN) ./$<
 
-$(MAIN): $(OBJS) $(SOURCE_MAIN)
+$(MAIN): $(OBJECTS) $(SOURCE_MAIN)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(OBJS): $(OUT)/%.o: src/%.c
+$(OBJECTS): $(OUT)/%.o: src/%.cc
 	$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: clean
