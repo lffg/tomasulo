@@ -1,0 +1,5 @@
+div r0,r2,r4
+add r6,r0,r8
+sw r6,0(r31)
+sub r8,r10,r14
+mul r6,r10,r8
