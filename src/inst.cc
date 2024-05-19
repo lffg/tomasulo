@@ -19,7 +19,7 @@
 inst::inst_t zeroed_inst()
 {
     inst::inst_t i;
-    i.op = inst::op_add;
+    i.op = inst::op_t::add;
     i.r1 = 0;
     i.r2 = 0;
     i.r3 = 0;
@@ -41,17 +41,17 @@ private:
         i += len;
 
         if (sub == "add")
-            return inst::op_add;
+            return inst::op_t::add;
         if (sub == "sub")
-            return inst::op_sub;
+            return inst::op_t::sub;
         if (sub == "mul")
-            return inst::op_mul;
+            return inst::op_t::mul;
         if (sub == "div")
-            return inst::op_div;
+            return inst::op_t::div;
         if (sub == "lw")
-            return inst::op_load;
+            return inst::op_t::load;
         if (sub == "sw")
-            return inst::op_store;
+            return inst::op_t::store;
         throw std::runtime_error{"unexpected instruction name"};
     }
 
@@ -130,6 +130,38 @@ public:
 
 namespace inst
 {
+    op_class_t class_for_op(op_t op)
+    {
+        switch (op)
+        {
+        case op_t::add:
+        case op_t::sub:
+            return op_class_t::additive;
+        case op_t::mul:
+        case op_t::div:
+            return op_class_t::multiplicative;
+        case op_t::load:
+        case op_t::store:
+            return op_class_t::mem;
+        }
+    }
+
+    int latency_for_op(op_t op)
+    {
+        switch (op)
+        {
+        case op_t::add:
+        case op_t::sub:
+            return 2;
+        case op_t::mul:
+            return 8;
+        case op_t::div:
+            return 12;
+        case op_t::load:
+        case op_t::store:
+            return 3;
+        }
+    }
 
     inst_t parse(std::string_view src)
     {
@@ -145,35 +177,35 @@ namespace inst
         // immediate-as-offset form.
         switch (inst.op)
         {
-        case op_add:
+        case op_t::add:
             os << "add ";
             break;
-        case op_sub:
+        case op_t::sub:
             os << "sub ";
             break;
-        case op_mul:
+        case op_t::mul:
             os << "mul ";
             break;
-        case op_div:
+        case op_t::div:
             os << "div ";
             break;
-        case op_load:
+        case op_t::load:
             os << "lw ";
             break;
-        case op_store:
+        case op_t::store:
             os << "sw ";
             break;
         }
         switch (inst.op)
         {
-        case op_add:
-        case op_sub:
-        case op_mul:
-        case op_div:
+        case op_t::add:
+        case op_t::sub:
+        case op_t::mul:
+        case op_t::div:
             os << "r" << static_cast<int>(inst.r1) << "," << "r" << static_cast<int>(inst.r2) << "," << "r" << static_cast<int>(inst.r3);
             break;
-        case op_load:
-        case op_store:
+        case op_t::load:
+        case op_t::store:
             os << "r" << static_cast<int>(inst.r1) << "," << static_cast<int>(inst.r2) << "(" << "r" << static_cast<int>(inst.r3) << ")";
             break;
         }

@@ -6,15 +6,22 @@
 
 namespace inst
 {
-    typedef enum op_t
+    enum class op_class_t : uint8_t
     {
-        op_add,
-        op_sub,
-        op_mul,
-        op_div,
-        op_load,
-        op_store,
-    } __attribute__((__packed__)) op_t;
+        additive,
+        multiplicative,
+        mem
+    };
+
+    enum class op_t : uint8_t
+    {
+        add,
+        sub,
+        mul,
+        div,
+        load,
+        store
+    };
 
     typedef struct inst_t
     {
@@ -24,6 +31,8 @@ namespace inst
         uint8_t r3; /* may be offset base */
     } inst_t;
 
+    op_class_t class_for_op(op_t op);
+    int latency_for_op(op_t);
     inst_t parse(std::string_view src);
     std::ostream &operator<<(std::ostream &os, const inst_t &inst);
 }
