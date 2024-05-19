@@ -7,6 +7,17 @@
 
 #include "inst.hh"
 
+// An operation tracker.
+class station_op_tracker_t
+{
+public:
+    inst::op_t op;
+    // How many cycles remain to finish execution.
+    int rem;
+
+    station_op_tracker_t(inst::op_t op);
+};
+
 class station_t
 {
 public:
@@ -14,8 +25,9 @@ public:
     int id;
     // The station op class.
     inst::op_class_t op_class;
-    // The operation being performed.
-    inst::op_t op;
+    // An operation tracker (used for the simulation).
+    // In a normal operation, a simple operation discriminant would suffice.
+    station_op_tracker_t tracker;
     // The reservation station that will produce the relevant source operand.
     // If zero, corresponding value is in `vj` or `vk`.
     uint8_t qj, qk;
@@ -27,7 +39,8 @@ public:
     bool busy;
 
     station_t() : id{0},
-                  op_class{inst::op_class_t::additive}, op{inst::op_t::add},
+                  op_class{inst::op_class_t::additive},
+                  tracker{station_op_tracker_t{inst::op_t::add}},
                   qj{0}, qk{0}, vj{0}, vk{0}, a{0},
                   busy{false} {}
 };

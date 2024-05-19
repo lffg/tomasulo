@@ -1,6 +1,12 @@
 #include "inst.hh"
 #include "station.hh"
 
+station_op_tracker_t::station_op_tracker_t(inst::op_t op)
+{
+    this->op = op;
+    rem = inst::latency_for_op(op);
+}
+
 void station_bag_t::add_station(inst::op_class_t op_class)
 {
     int id = static_cast<int>(stations.size());
