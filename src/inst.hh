@@ -34,7 +34,7 @@ namespace inst
 
     op_class_t class_for_op(op_t op);
     int latency_for_op(op_t);
-    inst_t parse(std::string_view src);
+    inst_t parse(std::string_view src, uint8_t reg_count);
     std::ostream &operator<<(std::ostream &os, const inst_t &inst);
 
     class prog_t

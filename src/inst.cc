@@ -31,6 +31,7 @@ class instruction_parser
 private:
     std::string_view src;
     size_t i;
+    uint8_t reg_count;
 
     inst::op_t parse_op()
     {
@@ -77,7 +78,10 @@ private:
     {
         if (src[i++] != 'r')
             throw std::runtime_error{"expected `r` for register"};
-        return parse_uint8();
+        uint8_t reg_no = parse_uint8();
+        if (reg_count <= reg_no)
+            throw std::runtime_error("tried to use invalid register (too big)");
+        return reg_no;
     }
 
     std::pair<uint8_t, uint8_t> parse_offset()
@@ -92,7 +96,7 @@ private:
     }
 
 public:
-    instruction_parser(std::string_view src) : src(src), i(0) {}
+    instruction_parser(std::string_view src, uint8_t reg_count) : src(src), i(0), reg_count(reg_count) {}
 
     inst::inst_t parse()
     {
@@ -163,9 +167,9 @@ namespace inst
         }
     }
 
-    inst_t parse(std::string_view src)
+    inst_t parse(std::string_view src, uint8_t reg_count)
     {
-        instruction_parser p{src};
+        instruction_parser p{src, reg_count};
         return p.parse();
     }
 
