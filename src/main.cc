@@ -5,8 +5,9 @@
 #include "inst.hh"
 #include "station.hh"
 #include "reg.hh"
+#include "sim.hh"
 
-int main()
+sim::ctx create_simulator_ctx()
 {
     std::ifstream f("prog/war-waw.txt");
     if (!f.is_open())
@@ -33,11 +34,19 @@ int main()
     station_bag.add_station(inst::op_class_t::mem);
     station_bag.add_station(inst::op_class_t::mem);
 
-    station_bag.show(std::cout);
+    sim::ctx ctx{std::move(reg_file), std::move(station_bag)};
+    return ctx;
+}
+
+int main()
+{
+    sim::ctx ctx = create_simulator_ctx();
+
+    ctx.stations.show(std::cout);
 
     std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
 
-    station_t *s = station_bag.get_free(inst::op_class_t::multiplicative);
+    station_t *s = ctx.stations.get_free(inst::op_class_t::multiplicative);
     if (s == nullptr)
     {
         std::cout << "<!!!@@@!!!> NOT found\n";
@@ -45,7 +54,7 @@ int main()
 
     s->fill_station(inst::op_t::div);
 
-    station_bag.show(std::cout);
+    ctx.stations.show(std::cout);
 
     return 0;
 }
