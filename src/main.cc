@@ -23,6 +23,8 @@ sim::ctx create_simulator_ctx(std::string_view path)
     std::string line{};
     while (std::getline(f, line))
     {
+        if (line.empty() || line.at(0) == ';')
+            continue;
         prog.add(inst::parse(line, REG_COUNT));
     }
 
