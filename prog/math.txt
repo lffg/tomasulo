@@ -1,13 +1,13 @@
 ; All registers start with 1
 
-add r1,r1,r1
-add r1,r1,r1
-add r1,r1,r1
-add r1,r1,r1
-; r1 is now 16
+add r2,r2,r2
+add r2,r2,r2
+add r2,r2,r2
+add r2,r2,r2
+; r2 is now 16
 
-add r0,r0,r0
-; r0 is now 2
+add r1,r1,r1
+; r1 is now 2
 
-div r2,r1,r0
-; r2 is now 8
+div r3,r2,r1
+; r3 is now 8
