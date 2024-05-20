@@ -12,7 +12,7 @@ Alternatively, one may want to build and execute in separate steps:
 
 ```bash
 make
-./target/debug/main
+./target/debug/main ./prog/war-waw.txt
 ```
 
 To compile with optimizations, the `CFG=release` env may be used, e.g.:
@@ -22,7 +22,7 @@ make run CFG=release ARGS="./prog/war-waw.txt"
 
 # or
 make CFG=release
-./target/release/main
+./target/release/main ./prog/war-waw.txt
 ```
 
 ## References
