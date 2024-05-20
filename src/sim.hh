@@ -28,5 +28,5 @@ namespace sim
         void bump_inst();
     };
 
-    void execute(ctx &ctx);
+    void simulate_iteration(ctx &ctx);
 }

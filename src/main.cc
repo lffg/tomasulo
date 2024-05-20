@@ -36,7 +36,8 @@ sim::ctx create_simulator_ctx()
     station_bag.add_station(inst::op_class_t::multiplicative);
     station_bag.add_station(inst::op_class_t::multiplicative);
     station_bag.add_station(inst::op_class_t::mem);
-    station_bag.add_station(inst::op_class_t::mem);
+    // notice that we only have one memory unit to emulate the concept of the
+    // "load-store queue".
 
     sim::ctx ctx{std::make_shared<inst::prog_t>(prog), std::move(reg_file), std::move(station_bag)};
     return ctx;
@@ -75,7 +76,7 @@ outer:
             // copy last
             ctx_history.push_back(ctx_history.back());
             // run simulation for the newly-created context
-            sim::execute(ctx_history.back());
+            sim::simulate_iteration(ctx_history.back());
         }
 
         print_ctx(ctx_history.at(current_cycle));

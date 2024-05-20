@@ -25,11 +25,12 @@ namespace sim
         pc++;
     }
 
-    void execute(ctx &ctx)
+    void simulate_iteration(ctx &ctx)
     {
         ctx.cycle += 1;
 
         issue(ctx);
+        execute(ctx);
     }
 }
 
@@ -128,12 +129,64 @@ void issue(sim::ctx &ctx)
 
     r->busy = true;
     r->tracker.op = inst.op;
+    r->tracker.rem = inst::latency_for_op(inst.op);
     if (op_class == inst::op_class_t::mem)
         fill_mem_station(ctx, inst, r);
     else
         fill_non_mem_station(ctx, inst, r);
 }
 
-void execute(sim::ctx &ctx) {}
+void execute_non_mem_inst(station_t &r)
+{
+    // in order to *start* executing, both operands must be valid.
+    // if that's not the case, bail out.
+    if (!(r.qj == 0 && r.qk == 0))
+        return;
+
+    r.tracker.rem -= 1; // emulate latency
+}
+
+void execute_mem_inst(station_t &r)
+{
+    if (!(r.qj == 0))
+        return;
+
+    // since we only have one memory unit, we can emulate the concept of a
+    // load-store queue, so we preserve the correct program ordering behavior
+    if (r.tracker.op == inst::op_t::store)
+    { // apparently, we don't need to wait for `r1` (the value to be stored)
+      // due to the existence of such a load-store queue.
+    }
+
+    // execute load/store step 1
+    r.a = r.vj + r.a;
+    // (some latency here...)
+
+    // execute load/store step 2 after step 1 (effective addr calculation) gets
+    // finished
+    // (read from Mem[r.a]...)
+
+    r.tracker.rem -= 1; // emulate latency
+}
+
+void execute(sim::ctx &ctx)
+{
+    // now we're on a given clock cycle number.
+    //
+    // the hardware is implemented such that all stations *can* make progress
+    // in parallel. we simulate this behavior on this software by iterating over
+    // all *busy* reservation stations and checking to see if any can make
+    // progress.
+    for (station_t &r : ctx.stations)
+    {
+        if (!r.busy)
+            continue; // skip stations that aren't in use
+
+        if (r.op_class == inst::op_class_t::mem)
+            execute_mem_inst(r);
+        else
+            execute_non_mem_inst(r);
+    }
+}
 
 void write(sim::ctx &ctx) {}
