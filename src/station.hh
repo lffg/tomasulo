@@ -44,12 +44,13 @@ public:
                   qj{0}, qk{0}, vj{0}, vk{0}, a{0},
                   busy{false} {}
 
-    void fill_station(inst::op_t op)
+    void reset()
     {
-        busy = true;
-        tracker.op = op;
-        qj = 5;
+        *this = station_t{};
     }
+
+    void write_j_value(uint32_t value);
+    void write_k_value(uint32_t value);
 };
 
 class station_bag_t

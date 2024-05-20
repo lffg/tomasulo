@@ -15,6 +15,8 @@ public:
     reg_t() : value{1}, qi{0} {}
     bool has_value();
     bool waiting_on_station();
+    // Writes a value and marks qi as 0.
+    void write_value(uint32_t value);
     uint8_t station_id();
 };
 
@@ -27,4 +29,7 @@ public:
     reg_file_t(uint8_t amount);
     reg_t &at(uint8_t i);
     void show(std::ostream &os);
+
+    auto begin() { return regs.begin(); }
+    auto end() { return regs.end(); }
 };

@@ -1,4 +1,5 @@
 #include <iostream> // TODO REMOVE THIS
+#include <cassert>
 
 #include "sim.hh"
 #include "inst.hh"
@@ -31,6 +32,7 @@ namespace sim
 
         issue(ctx);
         execute(ctx);
+        write(ctx);
     }
 }
 
@@ -180,7 +182,7 @@ void execute(sim::ctx &ctx)
     for (station_t &r : ctx.stations)
     {
         if (!r.busy)
-            continue; // skip stations that aren't in use
+            continue;
 
         if (r.op_class == inst::op_class_t::mem)
             execute_mem_inst(r);
@@ -189,4 +191,69 @@ void execute(sim::ctx &ctx)
     }
 }
 
-void write(sim::ctx &ctx) {}
+uint32_t get_computed_val(station_t &r)
+{
+    assert(r.qj == 0);
+    assert(r.qk == 0);
+    switch (r.tracker.op)
+    {
+    case inst::op_t::add:
+        return r.vj + r.vk;
+    case inst::op_t::sub:
+        return r.vj - r.vk;
+    case inst::op_t::mul:
+        return r.vj * r.vk;
+    case inst::op_t::div:
+        if (r.vk == 0)
+            return UINT32_MAX;
+        else
+            return r.vj / r.vk;
+    case inst::op_t::load:
+        return r.a; // return the effective address
+    case inst::op_t::store:
+        return 0; // no-op
+    }
+}
+
+void write(sim::ctx &ctx)
+{
+    // same remarks as above.
+    // iterate through all busy stations that *also* have exhausted the
+    // remaining tracker steps (latency simulator).
+    for (station_t &r : ctx.stations)
+    {
+        if (!r.busy || 0 < r.tracker.rem)
+            continue;
+
+        // the side-effect of a store isn't implemented on this simulator (since
+        // we don't have the concept of memory).
+        // as no values be propagated (bus on the real impl.), we early return.
+        if (r.tracker.op == inst::op_t::store)
+        {
+            r.reset();
+            return;
+        }
+
+        // we do the actual computation here (on the software) since we don't
+        // have a bus to actually propagate the just-computed values. that's
+        // not a problem, though, as we're only getting this result *after* the
+        // execution phase is completed (and the simulated latency has passed).
+        uint32_t new_val = get_computed_val(r);
+
+        // propagate the computed value for all interested registers and
+        // reservation stations
+        for (reg_t &reg : ctx.regs)
+            if (reg.qi == r.id)
+                reg.write_value(new_val);
+        for (station_t &s : ctx.stations)
+        {
+            if (s.qj == r.id)
+                s.write_j_value(new_val);
+            if (s.qk == r.id)
+                s.write_k_value(new_val);
+        }
+
+        // now, this station doesn't have any more use. mark it as free
+        r.reset();
+    }
+}

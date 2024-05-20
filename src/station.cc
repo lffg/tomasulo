@@ -7,6 +7,17 @@ station_op_tracker_t::station_op_tracker_t(inst::op_t o)
     rem = inst::latency_for_op(op);
 }
 
+void station_t::write_j_value(uint32_t value)
+{
+    vj = value;
+    qj = 0;
+}
+void station_t::write_k_value(uint32_t value)
+{
+    vk = value;
+    qk = 0;
+}
+
 void station_bag_t::add_station(inst::op_class_t op_class)
 {
     int id = static_cast<int>(stations.size());

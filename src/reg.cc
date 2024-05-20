@@ -10,6 +10,12 @@ bool reg_t::waiting_on_station()
     return !has_value();
 }
 
+void reg_t::write_value(uint32_t value)
+{
+    this->value = value;
+    qi = 0;
+}
+
 uint8_t reg_t::station_id()
 {
     if (has_value())
