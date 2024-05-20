@@ -1,5 +1,30 @@
 # tomasulo
 
+## Executing
+
+Use the following make target to run the program:
+
+```bash
+make run ARGS="./prog/war-waw.txt"
+```
+
+Alternatively, one may want to build and execute in separate steps:
+
+```bash
+make
+./target/debug/main
+```
+
+To compile with optimizations, the `CFG=release` env may be used, e.g.:
+
+```bash
+make run CFG=release ARGS="./prog/war-waw.txt"
+
+# or
+make CFG=release
+./target/release/main
+```
+
 ## References
 
 - David A. Patterson's Computer Architecture: A Quantitative Approach, 6th
