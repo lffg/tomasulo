@@ -195,14 +195,14 @@ namespace inst
         {
         case op_t::add:
         case op_t::sub:
-            return 2;
+            return 4;
         case op_t::mul:
             return 8;
         case op_t::div:
             return 12;
         case op_t::load:
         case op_t::store:
-            return 3;
+            return 4;
         }
     }
 
