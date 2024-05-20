@@ -44,9 +44,10 @@ namespace inst
     class prog_t
     {
     public:
-        std::vector<inst_t> prog;
+        std::vector<inst_t> inst_list;
 
-        prog_t() : prog{} {}
-        void add(inst_t i);
+        prog_t() : inst_list{} {}
+        void add(inst_t inst);
+        inst_t &at(std::size_t i);
     };
 }

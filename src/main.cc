@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <string>
 
 #include "inst.hh"
@@ -7,13 +8,16 @@
 #include "reg.hh"
 #include "sim.hh"
 
+void clear_stdout();
+void print_divider();
+
 sim::ctx create_simulator_ctx()
 {
     std::ifstream f("prog/war-waw.txt");
     if (!f.is_open())
         throw std::runtime_error{"file does not exist"};
 
-    uint8_t reg_count = 32;
+    uint8_t reg_count = 10;
 
     inst::prog_t prog{};
     std::string line{};
@@ -34,27 +38,95 @@ sim::ctx create_simulator_ctx()
     station_bag.add_station(inst::op_class_t::mem);
     station_bag.add_station(inst::op_class_t::mem);
 
-    sim::ctx ctx{std::move(reg_file), std::move(station_bag)};
+    sim::ctx ctx{std::make_shared<inst::prog_t>(prog), std::move(reg_file), std::move(station_bag)};
     return ctx;
 }
 
-int main()
+void execute(sim::ctx &ctx)
 {
-    sim::ctx ctx = create_simulator_ctx();
-
-    ctx.stations.show(std::cout);
-
-    std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
+    std::cout << "executed!\n";
+    ctx.cycle += 1;
 
     station_t *s = ctx.stations.get_free(inst::op_class_t::multiplicative);
     if (s == nullptr)
     {
         std::cout << "<!!!@@@!!!> NOT found\n";
+        return;
     }
 
     s->fill_station(inst::op_t::div);
+}
 
+void print_ctx(sim::ctx &ctx)
+{
+    std::cout << "Showing cycle number (" << ctx.cycle << ")\n";
+    std::cout << "Current instruction (#" << ctx.current_inst_num
+              << ") is [" << ctx.current_inst() << "]\n";
+
+    print_divider();
     ctx.stations.show(std::cout);
+}
+
+int main()
+{
+    int first = true;
+
+    std::vector<sim::ctx> ctx_history{create_simulator_ctx()};
+    std::size_t current_cycle = ctx_history.back().cycle;
+outer:
+    do
+    {
+        // We want to see warnings!
+        if (!first)
+            clear_stdout();
+        first = false;
+
+        if (current_cycle == ctx_history.size())
+        {
+            // copy last
+            ctx_history.push_back(ctx_history.back());
+            // run simulation for the newly-created context
+            execute(ctx_history.back());
+        }
+
+        print_ctx(ctx_history.at(current_cycle));
+
+        print_divider();
+        std::cout << "[n]ext, [p]rev, [q]uit => ";
+        while (true)
+        {
+            char answer = '*';
+            std::cin >> answer;
+            switch (answer)
+            {
+            case 'n':
+                current_cycle++;
+                goto outer;
+            case 'p':
+                if (0 < current_cycle)
+                    current_cycle--;
+                goto outer;
+            case 'q':
+                goto outer_end;
+            default:
+                std::cout << "Again => ";
+                continue;
+            }
+        }
+    } while (0);
+outer_end:
+
+    std::cout << "bye!\n";
 
     return 0;
+}
+
+void clear_stdout()
+{
+    std::cout << "\033c";
+}
+
+void print_divider()
+{
+    std::cout << "==========================================================================\n";
 }

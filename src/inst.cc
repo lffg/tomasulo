@@ -152,18 +152,25 @@ namespace inst
         switch (op)
         {
         case op_t::add:
-            return os << "add";
+            os << "add";
+            break;
         case op_t::sub:
-            return os << "sub";
+            os << "sub";
+            break;
         case op_t::mul:
-            return os << "mul";
+            os << "mul";
+            break;
         case op_t::div:
-            return os << "div";
+            os << "div";
+            break;
         case op_t::load:
-            return os << "lw";
+            os << "lw";
+            break;
         case op_t::store:
-            return os << "sw";
+            os << "sw";
+            break;
         }
+        return os;
     }
 
     op_class_t class_for_op(op_t op)
@@ -228,8 +235,13 @@ namespace inst
         return os;
     }
 
-    void prog_t::add(inst_t i)
+    void prog_t::add(inst_t inst)
     {
-        prog.push_back(i);
+        inst_list.push_back(inst);
+    }
+
+    inst_t &prog_t::at(std::size_t i)
+    {
+        return inst_list.at(i);
     }
 }
