@@ -26,7 +26,7 @@ run: $(MAIN)
 $(MAIN): $(OBJECTS) $(SOURCE_MAIN)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(OBJECTS): $(OUT)/%.o: src/%.cc
+$(OBJECTS): $(OUT)/%.o: src/%.cc src/%.hh
 	$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: clean
