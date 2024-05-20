@@ -84,7 +84,7 @@ outer:
         std::cout << "[n]ext, [p]rev, [q]uit => ";
         while (true)
         {
-            char answer = '*';
+            char answer = 'q';
             std::cin >> answer;
             switch (answer)
             {
