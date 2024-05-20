@@ -14,6 +14,8 @@ namespace inst
         mem
     };
 
+    std::ostream &operator<<(std::ostream &os, const op_class_t &op_class);
+
     enum class op_t : uint8_t
     {
         add,
@@ -24,6 +26,10 @@ namespace inst
         store
     };
 
+    std::ostream &operator<<(std::ostream &os, const op_t &op);
+    op_class_t class_for_op(op_t op);
+    int latency_for_op(op_t);
+
     typedef struct inst_t
     {
         op_t op;
@@ -32,10 +38,8 @@ namespace inst
         uint8_t r3; /* may be offset base */
     } inst_t;
 
-    op_class_t class_for_op(op_t op);
-    int latency_for_op(op_t);
-    inst_t parse(std::string_view src, uint8_t reg_count);
     std::ostream &operator<<(std::ostream &os, const inst_t &inst);
+    inst_t parse(std::string_view src, uint8_t reg_count);
 
     class prog_t
     {

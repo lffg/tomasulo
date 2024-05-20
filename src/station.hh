@@ -43,6 +43,13 @@ public:
                   tracker{station_op_tracker_t{inst::op_t::add}},
                   qj{0}, qk{0}, vj{0}, vk{0}, a{0},
                   busy{false} {}
+
+    void fill_station(inst::op_t op)
+    {
+        busy = true;
+        tracker.op = op;
+        qj = 5;
+    }
 };
 
 class station_bag_t
@@ -55,7 +62,12 @@ public:
 
     void add_station(inst::op_class_t op_class);
 
+    auto begin() { return stations.begin() + 1; }
+    auto end() { return stations.end(); }
+
     // Returns a free reservation station for the given operator class, or NULL
     // if there isn't one.
     station_t *get_free(inst::op_class_t op_class);
+
+    void show(std::ostream &os);
 };

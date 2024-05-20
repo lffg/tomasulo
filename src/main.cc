@@ -33,7 +33,19 @@ int main()
     station_bag.add_station(inst::op_class_t::mem);
     station_bag.add_station(inst::op_class_t::mem);
 
-    std::cout << "Hello, world!\n";
+    station_bag.show(std::cout);
+
+    std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
+
+    station_t *s = station_bag.get_free(inst::op_class_t::multiplicative);
+    if (s == nullptr)
+    {
+        std::cout << "<!!!@@@!!!> NOT found\n";
+    }
+
+    s->fill_station(inst::op_t::div);
+
+    station_bag.show(std::cout);
 
     return 0;
 }

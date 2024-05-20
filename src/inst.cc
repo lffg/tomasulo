@@ -134,6 +134,38 @@ public:
 
 namespace inst
 {
+    std::ostream &operator<<(std::ostream &os, const op_class_t &op_class)
+    {
+        switch (op_class)
+        {
+        case op_class_t::additive:
+            return os << "add";
+        case op_class_t::multiplicative:
+            return os << "mul";
+        case op_class_t::mem:
+            return os << "mem";
+        }
+    }
+
+    std::ostream &operator<<(std::ostream &os, const op_t &op)
+    {
+        switch (op)
+        {
+        case op_t::add:
+            return os << "add";
+        case op_t::sub:
+            return os << "sub";
+        case op_t::mul:
+            return os << "mul";
+        case op_t::div:
+            return os << "div";
+        case op_t::load:
+            return os << "lw";
+        case op_t::store:
+            return os << "sw";
+        }
+    }
+
     op_class_t class_for_op(op_t op)
     {
         switch (op)
@@ -175,31 +207,11 @@ namespace inst
 
     std::ostream &operator<<(std::ostream &os, const inst_t &inst)
     {
+        os << inst.op << " ";
         // Yeah, I know this isn't right since it doesn't follow the actual
         // instruction encoding, but it works for the sake of this project,
         // as we're assuming that `lw` and `sw` instructions always use the
         // immediate-as-offset form.
-        switch (inst.op)
-        {
-        case op_t::add:
-            os << "add ";
-            break;
-        case op_t::sub:
-            os << "sub ";
-            break;
-        case op_t::mul:
-            os << "mul ";
-            break;
-        case op_t::div:
-            os << "div ";
-            break;
-        case op_t::load:
-            os << "lw ";
-            break;
-        case op_t::store:
-            os << "sw ";
-            break;
-        }
         switch (inst.op)
         {
         case op_t::add:
