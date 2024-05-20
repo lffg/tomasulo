@@ -16,6 +16,11 @@ void station_bag_t::add_station(inst::op_class_t op_class)
     stations.push_back(s);
 }
 
+station_t &station_bag_t::at(uint8_t i)
+{
+    return stations.at(static_cast<std::size_t>(i));
+}
+
 // Returns a free reservation station for the given operator class, or NULL
 // if there isn't one.
 station_t *station_bag_t::get_free(inst::op_class_t op_class)
@@ -37,9 +42,9 @@ void station_bag_t::show(std::ostream &os)
     for (auto it = begin(); it != end(); it++)
     {
         station_t &s = *it;
-        os << "| " << s.op_class << "\t "; // kind
-        os << "| " << s.id << "\t ";       // id
-        os << "| " << s.busy << "\t ";     // busy
+        os << "| " << s.op_class << "\t ";             // kind
+        os << "| " << static_cast<int>(s.id) << "\t "; // id
+        os << "| " << s.busy << "\t ";                 // busy
         if (s.busy)
         {
             os << "| " << s.tracker.op << "\t ";           // op

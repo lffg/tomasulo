@@ -11,19 +11,22 @@ namespace sim
     {
     public:
         std::shared_ptr<inst::prog_t> prog;
-        std::size_t current_inst_num;
+        std::size_t pc;
         reg_file_t regs;
         station_bag_t stations;
         int cycle;
 
         ctx(std::shared_ptr<inst::prog_t> prog, reg_file_t &&regs, station_bag_t &&stations)
             : prog(prog),
-              current_inst_num(0),
+              pc(0),
               regs(std::move(regs)),
               stations(std::move(stations)),
               cycle(0) {}
 
-        inst::inst_t &current_inst();
+        bool has_next_inst();
+        inst::inst_t &next_inst();
         void bump_inst();
     };
+
+    void execute(ctx &ctx);
 }

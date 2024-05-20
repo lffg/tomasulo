@@ -42,26 +42,13 @@ sim::ctx create_simulator_ctx()
     return ctx;
 }
 
-void execute(sim::ctx &ctx)
-{
-    std::cout << "executed!\n";
-    ctx.cycle += 1;
-
-    station_t *s = ctx.stations.get_free(inst::op_class_t::multiplicative);
-    if (s == nullptr)
-    {
-        std::cout << "<!!!@@@!!!> NOT found\n";
-        return;
-    }
-
-    s->fill_station(inst::op_t::div);
-}
-
 void print_ctx(sim::ctx &ctx)
 {
     std::cout << "Showing cycle number (" << ctx.cycle << ")\n";
-    std::cout << "Current instruction (#" << ctx.current_inst_num
-              << ") is [" << ctx.current_inst() << "]\n";
+    if (ctx.has_next_inst())
+        std::cout << "Current instruction (#" << ctx.pc << ") is [" << ctx.next_inst() << "]\n";
+    else
+        std::cout << "Current instruction is [N/A]\n";
 
     print_divider();
     ctx.stations.show(std::cout);
@@ -88,7 +75,7 @@ outer:
             // copy last
             ctx_history.push_back(ctx_history.back());
             // run simulation for the newly-created context
-            execute(ctx_history.back());
+            sim::execute(ctx_history.back());
         }
 
         print_ctx(ctx_history.at(current_cycle));

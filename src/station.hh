@@ -22,7 +22,7 @@ class station_t
 {
 public:
     // The station ID.
-    int id;
+    uint8_t id;
     // The station op class.
     inst::op_class_t op_class;
     // An operation tracker (used for the simulation).
@@ -64,6 +64,8 @@ public:
 
     auto begin() { return stations.begin() + 1; }
     auto end() { return stations.end(); }
+
+    station_t &at(uint8_t i);
 
     // Returns a free reservation station for the given operator class, or NULL
     // if there isn't one.

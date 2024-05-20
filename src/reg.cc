@@ -5,6 +5,11 @@ bool reg_t::has_value()
     return qi == 0;
 }
 
+bool reg_t::waiting_on_station()
+{
+    return !has_value();
+}
+
 uint8_t reg_t::station_id()
 {
     if (has_value())
@@ -16,6 +21,11 @@ reg_file_t::reg_file_t(uint8_t amount)
 {
     this->amount = amount;
     regs = std::vector<reg_t>{static_cast<std::size_t>(amount), reg_t{}};
+}
+
+reg_t &reg_file_t::at(uint8_t i)
+{
+    return regs.at(static_cast<std::size_t>(i));
 }
 
 void reg_file_t::show(std::ostream &os)
@@ -36,7 +46,7 @@ void reg_file_t::show(std::ostream &os)
         }
         else
         {
-            os << "&" << static_cast<int>(reg.station_id());
+            os << "->" << static_cast<int>(reg.station_id());
         }
         os << "\t|";
     }

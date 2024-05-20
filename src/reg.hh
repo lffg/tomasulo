@@ -14,6 +14,7 @@ public:
 
     reg_t() : value{0}, qi{0} {}
     bool has_value();
+    bool waiting_on_station();
     uint8_t station_id();
 };
 
@@ -24,5 +25,6 @@ public:
     std::vector<reg_t> regs;
 
     reg_file_t(uint8_t amount);
+    reg_t &at(uint8_t i);
     void show(std::ostream &os);
 };
