@@ -98,11 +98,11 @@ void fill_mem_station(sim::ctx &ctx, inst::inst_t &inst, station_t *r)
     {
         reg_t &src_op_reg = ctx.regs.at(inst.r1);
         if (src_op_reg.waiting_on_station())
-            r->qj = src_op_reg.station_id();
+            r->qk = src_op_reg.station_id();
         else
         {
-            r->vj = src_op_reg.value;
-            r->qj = 0;
+            r->vk = src_op_reg.value;
+            r->qk = 0;
         }
     }
 }
