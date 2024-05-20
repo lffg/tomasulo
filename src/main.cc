@@ -8,25 +8,25 @@
 #include "reg.hh"
 #include "sim.hh"
 
+const uint8_t REG_COUNT = 8;
+
 void clear_stdout();
 void print_divider();
 
-sim::ctx create_simulator_ctx()
+sim::ctx create_simulator_ctx(std::string_view path)
 {
-    std::ifstream f("prog/war-waw.txt");
+    std::ifstream f{path.data()};
     if (!f.is_open())
         throw std::runtime_error{"file does not exist"};
-
-    uint8_t reg_count = 8;
 
     inst::prog_t prog{};
     std::string line{};
     while (std::getline(f, line))
     {
-        prog.add(inst::parse(line, reg_count));
+        prog.add(inst::parse(line, REG_COUNT));
     }
 
-    reg_file_t reg_file{reg_count};
+    reg_file_t reg_file{REG_COUNT};
 
     station_bag_t station_bag{};
     station_bag.add_station(inst::op_class_t::additive);
@@ -57,11 +57,18 @@ void print_ctx(sim::ctx &ctx)
     ctx.regs.show(std::cout);
 }
 
-int main()
+int main(int argc, char **argv)
 {
+    if (argc != 2)
+    {
+        std::cerr << "error: must provide path to instructions file as argument.\n";
+        return 1;
+    }
+    std::string_view instructions_file_path{argv[1]};
+
     int first = true;
 
-    std::vector<sim::ctx> ctx_history{create_simulator_ctx()};
+    std::vector<sim::ctx> ctx_history{create_simulator_ctx(instructions_file_path)};
     std::size_t current_cycle = ctx_history.back().cycle;
 outer:
     do
