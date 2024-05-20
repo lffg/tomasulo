@@ -79,8 +79,10 @@ private:
         if (src[i++] != 'r')
             throw std::runtime_error{"expected `r` for register"};
         uint8_t reg_no = parse_uint8();
+        if (reg_no == 0)
+            throw std::runtime_error{"`0` is not a valid register number; start in `r1`"};
         if (reg_count <= reg_no)
-            throw std::runtime_error("tried to use invalid register (too big)");
+            throw std::runtime_error{"tried to use invalid register (too big)"};
         return reg_no;
     }
 

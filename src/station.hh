@@ -38,15 +38,18 @@ public:
     // Whether the station is currently in use.
     bool busy;
 
-    station_t() : id{0},
-                  op_class{inst::op_class_t::additive},
+    station_t() : // fixed
+                  id{0}, op_class{inst::op_class_t::additive},
+                  // changeable
                   tracker{station_op_tracker_t{inst::op_t::add}},
                   qj{0}, qk{0}, vj{0}, vk{0}, a{0},
-                  busy{false} {}
+                  busy{false}
+    {
+    }
 
     void reset()
     {
-        *this = station_t{};
+        busy = false;
     }
 
     void write_j_value(uint32_t value);

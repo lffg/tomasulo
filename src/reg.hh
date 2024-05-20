@@ -22,14 +22,15 @@ public:
 
 class reg_file_t
 {
-public:
+private:
     uint8_t amount;
     std::vector<reg_t> regs;
 
+public:
     reg_file_t(uint8_t amount);
     reg_t &at(uint8_t i);
     void show(std::ostream &os);
 
-    auto begin() { return regs.begin(); }
+    auto begin() { return regs.begin() + 1; }
     auto end() { return regs.end(); }
 };

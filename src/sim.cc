@@ -243,8 +243,11 @@ void write(sim::ctx &ctx)
         // propagate the computed value for all interested registers and
         // reservation stations
         for (reg_t &reg : ctx.regs)
-            if (reg.qi == r.id)
+            if (!reg.has_value() && reg.qi == r.id)
+            {
+                std::cout << "for r.id=" << r.id << ", and reg.qi=" << reg.qi << ".\n";
                 reg.write_value(new_val);
+            }
         for (station_t &s : ctx.stations)
         {
             if (s.qj == r.id)

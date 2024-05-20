@@ -29,6 +29,8 @@ void station_bag_t::add_station(inst::op_class_t op_class)
 
 station_t &station_bag_t::at(uint8_t i)
 {
+    if (i == 0)
+        throw std::runtime_error{"can't index station 0, it's a sentinel"};
     return stations.at(static_cast<std::size_t>(i));
 }
 
