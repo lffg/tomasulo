@@ -48,7 +48,7 @@ station_t *station_bag_t::get_free(inst::op_class_t op_class)
 
 void station_bag_t::show(std::ostream &os)
 {
-    os << "| Kind\t | Id\t | Busy\t | Op\t | Qj\t | Vj\t | Qk\t | Vk\t | A\t |";
+    os << "| Kind\t | Id\t | Busy\t | Op\t | Qj\t | Vj\t | Qk\t | Vk\t | A\t | Rem\t |";
     os << "\n";
     for (auto it = begin(); it != end(); it++)
     {
@@ -74,10 +74,11 @@ void station_bag_t::show(std::ostream &os)
                 os << "n/a";
             os << "\t ";
             os << "| " << static_cast<int>(s.a) << "\t "; // a
+            os << "| " << s.tracker.rem << "\t ";         // rem
         }
         else
         {
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 7; i++)
             {
                 os << "|\t ";
             }
