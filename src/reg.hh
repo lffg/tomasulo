@@ -12,7 +12,7 @@ public:
     // Zero if `value` is already in this register.
     uint8_t qi;
 
-    reg_t() : value{0}, qi{0} {}
+    reg_t() : value{1}, qi{0} {}
     bool has_value();
     bool waiting_on_station();
     uint8_t station_id();
