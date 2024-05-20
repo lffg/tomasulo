@@ -17,7 +17,7 @@ sim::ctx create_simulator_ctx()
     if (!f.is_open())
         throw std::runtime_error{"file does not exist"};
 
-    uint8_t reg_count = 10;
+    uint8_t reg_count = 8;
 
     inst::prog_t prog{};
     std::string line{};
@@ -65,6 +65,8 @@ void print_ctx(sim::ctx &ctx)
 
     print_divider();
     ctx.stations.show(std::cout);
+    print_divider();
+    ctx.regs.show(std::cout);
 }
 
 int main()
@@ -123,7 +125,11 @@ outer_end:
 
 void clear_stdout()
 {
+#ifdef WINDOWS
+    auto _ = system("cls");
+#else
     std::cout << "\033c";
+#endif
 }
 
 void print_divider()
